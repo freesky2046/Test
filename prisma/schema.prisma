@@ -8,6 +8,8 @@ generator client {
 // DIRECT_URL 直连数据库，用于 prisma db push 等 DDL 操作
 datasource db {
   provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // 管理员用户表：存储登录凭据
