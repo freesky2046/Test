@@ -1,13 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
+// 代码生成器：根据 schema 生成 TypeScript 类型安全的 Prisma Client
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
+// 数据源：连接 Neon PostgreSQL 数据库
+// DATABASE_URL 走连接池（PgBouncer），用于普通查询
+// DIRECT_URL 直连数据库，用于 prisma db push 等 DDL 操作
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+}
+
+// 管理员用户表：存储登录凭据
+model User {
+  id        String   @id @default(cuid())   // 主键，自动生成唯一 ID
+  email     String   @unique                // 邮箱，唯一
+  password  String                          // bcrypt 加密后的密码哈希
+  name      String?                         // 用户名，可选
+  createdAt DateTime @default(now())        // 创建时间，自动填充
+  updatedAt DateTime @updatedAt             // 更新时间，自动更新
+}
+
+// 优惠券表：存储用户提交的线下优惠券
+model Coupon {
+  id          String   @id @default(cuid())           // 主键
+  name        String                                   // 用户姓名
+  email       String                                  // 用户邮箱
+  orderNumber String                                  // 订单号
+  status      String   @default("UNUSED")            // 状态：UNUSED 未使用 / USED 已使用
+  createdAt   DateTime @default(now())                // 提交时间
+  updatedAt   DateTime @updatedAt                     // 最后更新时间
 }
